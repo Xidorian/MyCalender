@@ -5,7 +5,6 @@
  * Ryan Parsons
  */
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 // Presents the user with a menu and asks for input. then prints appropriate calendar for input
@@ -18,10 +17,7 @@ public class MyCalender {
     public static final int DAYS_IN_WEEK = 7;
 
     public static void main(String[] args) {
-//        Scanner console = new Scanner(System.in); //
-//        SimpleDateFormat mmddDateFormat = new SimpleDateFormat("MM/dd"); possibly to restrict user input to correct formatting
         Scanner terminal = new Scanner(System.in); //for taking in tokens
-        terminal.useDelimiter("[/ \n]");
 
         int month = -1;
         int day = -1;
@@ -38,15 +34,16 @@ public class MyCalender {
             System.out.println("\"q\" to quit the program");
             command = terminal.next();
             if (command.equals("e")) { //user to enters a date and displays the calendar for that month
-                month = getDate(terminal, "Please enter a date with format MM/DD: ");
-                day = getDate(terminal, "");
+                month = monthFromDate(getDate());
+                day = dayFromDate(getDate());
                 drawMonth(month, day, dim);
             } else if (command.equals("t")) { //displays today's date
                 printToday();
                 month = monthFromDate(printToday());
                 day = dayFromDate(printToday());
             } else if (command.equals("n")) { //displays the next month or re-prompts main menu
-                month = printNext(month, day, dim);
+                month = monthFromDate(printNext(month, day, dim));
+                day = dayFromDate(printNext(month, day, dim));
             } else if (command.equals("p")) { //displays the previous month or re-prompts main menu
                 month = printPrevious(month, day, dim);
             } else if (command.equals("q")) { //ends program or prints invalid command prompt
@@ -160,17 +157,20 @@ public class MyCalender {
 
 
     //gets next month from last month shown and prints its calendar
-    public static int printNext(int month, int day, int dim) {
+    public static String printNext(int month, int day, int dim) {
+        String date = "";
         if (month == -1 || day == -1) {
             System.out.println("You need to have a calendar displayed first.");
         } else if (month == 12) {
             month = 1;
             drawMonth(month, day, dim);
+            date += month + "/" + day;
         } else {
             month += 1;
             drawMonth(month, day, dim);
+            date += month + "/" + day;
         }
-        return month;
+        return date;
     }
 
 
@@ -191,13 +191,17 @@ public class MyCalender {
 
     //prevents user from typing non-integers as input.
     //want to add prevention from typing outside of date format
-    public static int getDate(Scanner terminal, String prompt) {
-        System.out.print(prompt);
-        while (!terminal.hasNextInt()) {
-            terminal.next();
+    public static String getDate() {
+        Scanner console = new Scanner(System.in);
+        String date = "";
+        System.out.print("Please enter a date with format MM/DD: ");
+        date += console.nextLine();
+        int month = monthFromDate(date);
+        int day = dayFromDate(date);
+        while (month < 1 || month > 12 || day < 1 || day > dim(month)) {
             System.out.print("please enter a valid date as MM/DD: ");
         }
-        return terminal.nextInt();
+        return date;
     }
 
     public static int dim(int month) {
