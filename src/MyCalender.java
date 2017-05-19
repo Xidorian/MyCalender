@@ -34,18 +34,22 @@ public class MyCalender {
             System.out.println("\"q\" to quit the program");
             command = terminal.next();
             if (command.equals("e")) { //user to enters a date and displays the calendar for that month
-                month = monthFromDate(getDate());
-                day = dayFromDate(getDate());
+                String date = getDate();
+                month = monthFromDate(date);
+                day = dayFromDate(date);
                 drawMonth(month, day, dim);
             } else if (command.equals("t")) { //displays today's date
                 printToday();
                 month = monthFromDate(printToday());
                 day = dayFromDate(printToday());
             } else if (command.equals("n")) { //displays the next month or re-prompts main menu
-                month = monthFromDate(printNext(month, day, dim));
-                day = dayFromDate(printNext(month, day, dim));
+                String date = printNext(month, day, dim);
+                month = monthFromDate(date);
+                day = dayFromDate(date);
             } else if (command.equals("p")) { //displays the previous month or re-prompts main menu
-                month = printPrevious(month, day, dim);
+                String date = printPrevious(month, day, dim);
+                month = monthFromDate(date);
+                day = dayFromDate(date);
             } else if (command.equals("q")) { //ends program or prints invalid command prompt
                 break;
             } else {
@@ -175,17 +179,20 @@ public class MyCalender {
 
 
     //gets previous month from last month shown and prints its calendar
-    public static int printPrevious(int month, int day, int dim) {
+    public static String printPrevious(int month, int day, int dim) {
+        String date = "";
         if (month == -1 || day == -1) {
             System.out.println("You need to have a calendar displayed first.");
         } else if (month == 1) {
             month = 12;
             drawMonth(month, day, dim);
+            date += month + "/" + day;
         } else {
             month -= 1;
             drawMonth(month, day, dim);
+            date += month + "/" + day;
         }
-        return month;
+        return date;
     }
 
 
@@ -205,9 +212,32 @@ public class MyCalender {
     }
 
     public static int dim(int month) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.MONTH, month + 2); //this suddenly decided to be +2 and idk why.
-        int dim = cal.getActualMaximum(Calendar.DATE);
+        int dim = 0;
+        if (month == 1){
+            dim = 31;
+        } else if (month == 2){
+            dim = 28;
+        } else if (month == 3){
+            dim = 31;
+        } else if (month == 4){
+            dim = 30;
+        } else if (month == 5){
+            dim = 31;
+        } else if (month == 6){
+            dim = 30;
+        } else if (month == 7){
+            dim = 31;
+        } else if (month == 8){
+            dim = 31;
+        } else if (month == 9){
+            dim = 30;
+        } else if (month == 10){
+            dim = 31;
+        } else if (month == 11){
+            dim = 30;
+        } else if (month == 12){
+            dim = 31;
+        }
         return dim;
     }
 
